@@ -25,7 +25,7 @@ A mobile-friendly daily checklist web app to track habits and tasks with progres
 
 ## Live Demo
 
-[View Live Demo](https://YOUR_USERNAME.github.io/daily-checklist/)
+[View Live Demo](https://aprkim.github.io/daily-checklist/)
 
 ## Technologies Used
 
