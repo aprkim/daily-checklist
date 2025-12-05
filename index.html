@@ -923,6 +923,7 @@
             // Save all task texts, including completed ones
             const allTaskTexts = currentData.tasks.map(t => t.text);
             localStorage.setItem('userDefaultTasks', JSON.stringify(allTaskTexts));
+            console.log('Saved default tasks:', allTaskTexts);
         }
 
         // Add new task
@@ -1108,8 +1109,10 @@
             
             // Reload user's saved default tasks
             const savedDefaultTasks = localStorage.getItem('userDefaultTasks');
+            console.log('Resetting - saved default tasks:', savedDefaultTasks);
             if (savedDefaultTasks) {
                 const taskTexts = JSON.parse(savedDefaultTasks);
+                console.log('Parsed task texts:', taskTexts);
                 taskTexts.forEach((taskText, index) => {
                     currentData.tasks.push({
                         id: Date.now() + index,
