@@ -674,6 +674,9 @@
             currentData.totalTasks = templateTasks.length;
             currentData.date = getTodayString();
             
+            // Save template tasks as user's default tasks
+            localStorage.setItem('userDefaultTasks', JSON.stringify(templateTasks));
+            
             saveData();
             
             // Hide modal
@@ -792,6 +795,12 @@
         function saveData() {
             localStorage.setItem('dailyChecklistData', JSON.stringify(currentData));
             localStorage.setItem('dailyChecklistHistory', JSON.stringify(history));
+            
+            // Save the current task list as user's default template (excluding completed tasks)
+            const defaultTasks = currentData.tasks
+                .filter(t => !t.completed)
+                .map(t => t.text);
+            localStorage.setItem('userDefaultTasks', JSON.stringify(defaultTasks));
         }
 
         // Add new task
@@ -965,8 +974,19 @@
                 toggleEditMode();
             }
             
-            // Reload default tasks
-            initializeDefaultTasks();
+            // Reload user's saved default tasks
+            const savedDefaultTasks = localStorage.getItem('userDefaultTasks');
+            if (savedDefaultTasks) {
+                const taskTexts = JSON.parse(savedDefaultTasks);
+                taskTexts.forEach((taskText, index) => {
+                    currentData.tasks.push({
+                        id: Date.now() + index,
+                        text: taskText,
+                        completed: false
+                    });
+                });
+                currentData.totalTasks = taskTexts.length;
+            }
             
             saveData();
             updateProgress();
