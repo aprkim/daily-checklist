@@ -796,12 +796,12 @@
         function saveData() {
             localStorage.setItem('dailyChecklistData', JSON.stringify(currentData));
             localStorage.setItem('dailyChecklistHistory', JSON.stringify(history));
-            
-            // Save the current task list as user's default template (excluding completed tasks)
-            const defaultTasks = currentData.tasks
-                .filter(t => !t.completed)
-                .map(t => t.text);
-            localStorage.setItem('userDefaultTasks', JSON.stringify(defaultTasks));
+        }
+        
+        // Save user's default task list (all tasks, regardless of completion status)
+        function saveUserDefaultTasks() {
+            const allTaskTexts = currentData.tasks.map(t => t.text);
+            localStorage.setItem('userDefaultTasks', JSON.stringify(allTaskTexts));
         }
 
         // Add new task
@@ -824,6 +824,7 @@
             updateAddButtonState();
             
             saveData();
+            saveUserDefaultTasks();
             updateProgress();
             renderTasks();
         }
@@ -1057,6 +1058,7 @@
                 if (newText && newText !== task.text) {
                     task.text = newText;
                     saveData();
+                    saveUserDefaultTasks();
                 }
                 input.blur(); // Remove focus
                 renderTasks();
@@ -1162,6 +1164,7 @@
                     currentData.tasks.splice(targetIndex, 0, draggedTask);
                     
                     saveData();
+                    saveUserDefaultTasks();
                     renderTasks();
                 }
             }
