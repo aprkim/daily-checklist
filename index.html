@@ -825,10 +825,6 @@
 
         // Initialize app
         function init() {
-            console.log('=== INIT START ===');
-            console.log('userDefaultTasks from storage:', localStorage.getItem('userDefaultTasks'));
-            console.log('setupComplete:', localStorage.getItem('setupComplete'));
-            
             // Check if first-time setup is needed
             if (checkFirstTimeSetup()) {
                 return; // Don't continue init until template is selected
@@ -842,8 +838,6 @@
             renderTasks();
             renderHistory();
             setupEventListeners();
-            
-            console.log('=== INIT END ===');
         }
 
         // Initialize default tasks if it's a new day with no tasks
@@ -931,7 +925,6 @@
                 .filter(t => !t.completed)
                 .map(t => t.text);
             localStorage.setItem('userDefaultTasks', JSON.stringify(activeTaskTexts));
-            console.log('Saved default tasks:', activeTaskTexts, 'from total tasks:', currentData.tasks.length);
         }
 
         // Add new task
@@ -1003,8 +996,6 @@
             const taskList = document.getElementById('taskList');
             const editModeToggle = document.getElementById('editModeToggle');
             const activeTasks = currentData.tasks.filter(t => !t.completed);
-            
-            console.log('Rendering tasks:', activeTasks.length, 'active tasks');
             
             if (activeTasks.length === 0) {
                 taskList.innerHTML = '<div class="empty-message">No tasks yet. Add one below!</div>';
@@ -1105,7 +1096,6 @@
                 'Reset Today',
                 'Are you sure you want to reset today\'s tasks? This cannot be undone.',
                 () => {
-                    console.log('=== RESET CALLBACK EXECUTING ===');
                     currentData.tasks = [];
                     currentData.totalTasks = 0;
                     currentData.completedTasks = 0;
@@ -1118,10 +1108,8 @@
                     
                     // Reload user's saved default tasks
                     const savedDefaultTasks = localStorage.getItem('userDefaultTasks');
-                    console.log('Resetting - saved default tasks:', savedDefaultTasks);
                     if (savedDefaultTasks) {
                         const taskTexts = JSON.parse(savedDefaultTasks);
-                        console.log('Parsed task texts:', taskTexts);
                         taskTexts.forEach((taskText, index) => {
                             currentData.tasks.push({
                                 id: Date.now() + index,
@@ -1250,7 +1238,6 @@
 
         // Custom confirmation modal
         function showConfirmModal(title, message, onConfirm) {
-            console.log('showConfirmModal called with:', title);
             document.getElementById('confirmTitle').textContent = title;
             document.getElementById('confirmMessage').textContent = message;
             document.getElementById('confirmModal').classList.remove('hidden');
@@ -1262,13 +1249,9 @@
             
             // Store callback in closure, not global variable
             newConfirmBtn.onclick = () => {
-                console.log('Confirm button clicked, executing callback');
                 closeConfirmModal();
                 if (onConfirm) {
-                    console.log('Calling onConfirm callback');
                     onConfirm();
-                } else {
-                    console.log('No onConfirm callback provided!');
                 }
             };
         }
