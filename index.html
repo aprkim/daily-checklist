@@ -74,7 +74,7 @@
         .modal-subtitle {
             font-size: 16px;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
@@ -1169,11 +1169,13 @@
         function renderTasks() {
             const taskList = document.getElementById('taskList');
             const editModeToggle = document.getElementById('editModeToggle');
+            const clearTasksButton = document.querySelector('.clear-tasks-button');
             const activeTasks = currentData.tasks.filter(t => !t.completed);
             
             if (activeTasks.length === 0) {
                 taskList.innerHTML = '<div class="empty-message">No tasks yet. Add one below!</div>';
                 editModeToggle.disabled = true;
+                clearTasksButton.style.display = 'none';
                 // Turn off edit mode if it's on
                 if (editModeEnabled) {
                     toggleEditMode();
@@ -1181,8 +1183,9 @@
                 return;
             }
             
-            // Enable edit mode button when there are tasks
+            // Enable edit mode button and show clear button when there are tasks
             editModeToggle.disabled = false;
+            clearTasksButton.style.display = 'block';
             
             taskList.innerHTML = activeTasks.map(task => `
                 <div class="task-item" data-task-id="${task.id}" draggable="true">
@@ -1203,30 +1206,16 @@
         // Render history
         function renderHistory() {
             const historyList = document.getElementById('historyList');
+            const clearHistoryButton = document.querySelector('.clear-history-button');
             
             if (history.length === 0) {
-                historyList.innerHTML = `
-                    <div class="history-item placeholder">
-                        <div class="history-content">
-                            <div class="history-date">December 1, 2025</div>
-                            <div class="history-stats">8 / 10 tasks completed (80%)</div>
-                        </div>
-                    </div>
-                    <div class="history-item placeholder">
-                        <div class="history-content">
-                            <div class="history-date">November 30, 2025</div>
-                            <div class="history-stats">10 / 10 tasks completed (100%)</div>
-                        </div>
-                    </div>
-                    <div class="history-item placeholder">
-                        <div class="history-content">
-                            <div class="history-date">November 29, 2025</div>
-                            <div class="history-stats">7 / 10 tasks completed (70%)</div>
-                        </div>
-                    </div>
-                `;
+                historyList.innerHTML = '<div class="empty-message">No history yet.</div>';
+                clearHistoryButton.style.display = 'none';
                 return;
             }
+            
+            // Show clear button when there is history
+            clearHistoryButton.style.display = 'block';
             
             historyList.innerHTML = history.map((entry, index) => {
                 const percentage = Math.round((entry.completedTasks / entry.totalTasks) * 100);
