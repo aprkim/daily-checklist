@@ -1124,6 +1124,15 @@
             saveUserDefaultTasks();
             updateProgress();
             renderTasks();
+            
+            // Scroll the newly added task into view
+            setTimeout(() => {
+                const taskElements = document.querySelectorAll('.task');
+                if (taskElements.length > 0) {
+                    const lastTask = taskElements[taskElements.length - 1];
+                    lastTask.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 0);
         }
 
         // Complete task
