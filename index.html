@@ -972,13 +972,13 @@
             if (taskElement) {
                 taskElement.classList.add('completed');
                 
-                // Remove after 2 seconds
+                // Remove after 1.5 seconds
                 setTimeout(() => {
                     taskElement.classList.add('removing');
                     setTimeout(() => {
                         renderTasks();
                     }, 300);
-                }, 2000);
+                }, 1500);
             }
             
             saveData();
