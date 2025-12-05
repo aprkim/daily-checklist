@@ -221,6 +221,18 @@
             border-color: #BF3143;
         }
 
+        .edit-mode-toggle:disabled {
+            background: #f0f0f0;
+            color: #ccc;
+            border-color: #e0e0e0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .edit-mode-toggle:disabled:hover {
+            background: #f0f0f0;
+        }
+
         .progress-section {
             background: #f9f9f9;
             padding: 15px;
@@ -947,14 +959,23 @@
         // Render tasks
         function renderTasks() {
             const taskList = document.getElementById('taskList');
+            const editModeToggle = document.getElementById('editModeToggle');
             const activeTasks = currentData.tasks.filter(t => !t.completed);
             
             console.log('Rendering tasks:', activeTasks.length, 'active tasks');
             
             if (activeTasks.length === 0) {
                 taskList.innerHTML = '<div class="empty-message">No tasks yet. Add one below!</div>';
+                editModeToggle.disabled = true;
+                // Turn off edit mode if it's on
+                if (editModeEnabled) {
+                    toggleEditMode();
+                }
                 return;
             }
+            
+            // Enable edit mode button when there are tasks
+            editModeToggle.disabled = false;
             
             taskList.innerHTML = activeTasks.map(task => `
                 <div class="task-item" data-task-id="${task.id}" draggable="true">
