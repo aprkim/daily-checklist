@@ -458,6 +458,17 @@
             font-size: 20px;
             font-weight: 600;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-icon {
+            width: 20px;
+            height: 20px;
+            stroke: #666;
+            stroke-width: 2;
+            fill: none;
         }
 
         .clear-history-button {
@@ -660,7 +671,12 @@
 
             <div class="history-section">
                 <div class="history-header">
-                    <div class="history-title">📊 History</div>
+                    <div class="history-title">
+                        <svg class="history-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        History
+                    </div>
                     <button class="clear-history-button" onclick="clearAllHistory()">Clear All</button>
                 </div>
                 <div class="history-list" id="historyList"></div>
