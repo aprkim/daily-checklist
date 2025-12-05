@@ -191,10 +191,18 @@
             border-bottom: 1px solid #e0e0e0;
         }
 
+        .main-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
         .date {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 500;
             margin-bottom: 20px;
+            color: #666;
         }
 
         .edit-mode-toggle {
@@ -281,6 +289,47 @@
 
         .content {
             padding: 20px;
+        }
+
+        .task-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .task-list-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-icon {
+            width: 20px;
+            height: 20px;
+            stroke: #666;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .clear-tasks-button {
+            padding: 6px 16px;
+            background: none;
+            color: #666;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .clear-tasks-button:hover {
+            background: rgba(191, 49, 67, 0.1);
+            color: #BF3143;
         }
 
         .task-list {
@@ -488,10 +537,11 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: all 0.3s;
         }
 
         .clear-history-button:hover {
+            background: rgba(191, 49, 67, 0.1);
             color: #BF3143;
         }
 
@@ -649,6 +699,7 @@
 
     <div class="container">
         <div class="header">
+            <div class="main-title">Today's Checklist</div>
             <div class="date" id="currentDate"></div>
             <div class="progress-section">
                 <div class="progress-label" id="progressLabel">Progress: 0 / 0 tasks completed</div>
@@ -660,6 +711,15 @@
         </div>
 
         <div class="content">
+            <div class="task-list-header">
+                <div class="task-list-title">
+                    <svg class="task-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    Tasks
+                </div>
+                <button class="clear-tasks-button" onclick="clearAllTasks()">Clear All</button>
+            </div>
             <div class="task-list" id="taskList"></div>
 
             <div class="input-section">
@@ -726,6 +786,7 @@
 
         let history = [];
         let selectedTemplateType = null;
+        let activeDate = null; // The date shown in the header
 
         // Template definitions
         const templates = {
@@ -830,6 +891,15 @@
                 return; // Don't continue init until template is selected
             }
             
+            // Initialize activeDate from localStorage or set to today
+            const savedActiveDate = localStorage.getItem('activeDate');
+            if (savedActiveDate) {
+                activeDate = savedActiveDate;
+            } else {
+                activeDate = getTodayString();
+                localStorage.setItem('activeDate', activeDate);
+            }
+            
             loadData();
             checkDateChange();
             initializeDefaultTasks();
@@ -866,7 +936,7 @@
 
         // Update date display
         function updateDateDisplay() {
-            document.getElementById('currentDate').textContent = formatDate(getTodayString());
+            document.getElementById('currentDate').textContent = formatDate(activeDate);
         }
 
         // Check if date has changed
@@ -1101,6 +1171,10 @@
                     currentData.completedTasks = 0;
                     currentData.confettiShown = false;
                     
+                    // Update activeDate to current date
+                    activeDate = getTodayString();
+                    localStorage.setItem('activeDate', activeDate);
+                    
                     // Turn off edit mode if it's on
                     if (editModeEnabled) {
                         toggleEditMode();
@@ -1119,6 +1193,33 @@
                         });
                         currentData.totalTasks = taskTexts.length;
                     }
+                    
+                    saveData();
+                    updateProgress();
+                    updateDateDisplay();
+                    renderTasks();
+                }
+            );
+        }
+
+        // Clear all tasks permanently
+        function clearAllTasks() {
+            showConfirmModal(
+                'Clear All Tasks',
+                'Are you sure you want to permanently delete all tasks? This cannot be undone and will remove them from your daily checklist.',
+                () => {
+                    currentData.tasks = [];
+                    currentData.totalTasks = 0;
+                    currentData.completedTasks = 0;
+                    currentData.confettiShown = false;
+                    
+                    // Turn off edit mode if it's on
+                    if (editModeEnabled) {
+                        toggleEditMode();
+                    }
+                    
+                    // Clear the saved default tasks
+                    localStorage.setItem('userDefaultTasks', JSON.stringify([]));
                     
                     saveData();
                     updateProgress();
